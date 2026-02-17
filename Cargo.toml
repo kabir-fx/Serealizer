@@ -1,0 +1,11 @@
+[package]
+name = "serializer_plg"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+borsh = { version = "1.6.0", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+wincode = "0.4.4"
+wincode-derive = "0.4.2"
