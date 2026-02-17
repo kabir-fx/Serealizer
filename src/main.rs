@@ -1,52 +1,38 @@
-use crate::{borsh::BorshData, json::JSONData, wincode::WincodeData};
+use borsh::{BorshDeserialize, BorshSerialize};
+use serde::{Deserialize, Serialize};
+use wincode_derive::{SchemaRead, SchemaWrite};
 
-pub mod borsh;
+use crate::{borsh_type::BorshData, generic_storage::Storage, json::JSONData, wincode::WincodeData};
+
+pub mod borsh_type;
+pub mod generic_storage;
 pub mod json;
 pub mod wincode;
 
-trait CustomSerializer<T, E> {
+pub trait CustomSerializer<T, E> {
     // converts data to bytes
-    fn convert_to_bytes(&self) -> Result<Vec<u8>, E>;
+    fn convert_to_bytes(&self, data: T) -> Result<Vec<u8>, E>;
 
     // converts bytes back to data
     fn convert_from_bytes(&self, bytes: Vec<u8>) -> Result<T, E>;
 }
 
+#[derive(Debug, PartialEq, BorshSerialize, BorshDeserialize, SchemaRead, SchemaWrite, Serialize, Deserialize)]
+pub struct Person {
+    name: String,
+    age: u64,
+}
+
 fn main() {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
+    let mut borsh_storage = Storage::new(WincodeData);
+    let person = Person {
+        name: "Helooo".to_string(),
+        age: 334,
+    };
 
-    let person = BorshData { data: 545 };
-    let bytes = person.convert_to_bytes().expect("Failed to serialise");
-    println!("Bytes: {:?}", bytes);
-    println!(
-        "Bytes: {:?}",
-        person
-            .convert_from_bytes(bytes)
-            .expect("Failed to deserialize")
-    );
+    borsh_storage.save(person);
+    let loaded: Person = borsh_storage.load();
+    println!("Loaded: {:?}", loaded);
 
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
-
-    let person = WincodeData { data: 545 };
-    let bytes = person.convert_to_bytes().expect("Failed to serialise");
-    println!("Bytes: {:?}", bytes);
-    println!(
-        "Bytes: {:?}",
-        person
-            .convert_from_bytes(bytes)
-            .expect("Failed to deserialize")
-    );
-
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
-    let person = JSONData { data: 545 };
-    let bytes = person.convert_to_bytes().expect("Failed to serialise");
-    println!("Bytes: {:?}", bytes);
-    println!(
-        "Bytes: {:?}",
-        person
-            .convert_from_bytes(bytes)
-            .expect("Failed to deserialize")
-    );
-
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
+    println!("{}", borsh_storage.has_data());
 }
