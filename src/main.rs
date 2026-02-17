@@ -15,9 +15,7 @@ trait CustomSerializer<T, E> {
 fn main() {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
 
-    let person = BorshData {
-        name: String::from("GElooooooo"),
-    };
+    let person = BorshData { data: 545 };
     let bytes = person.convert_to_bytes().expect("Failed to serialise");
     println!("Bytes: {:?}", bytes);
     println!(
@@ -29,9 +27,7 @@ fn main() {
 
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
 
-    let person = WincodeData {
-        name: String::from("GElooooooo"),
-    };
+    let person = WincodeData { data: 545 };
     let bytes = person.convert_to_bytes().expect("Failed to serialise");
     println!("Bytes: {:?}", bytes);
     println!(
@@ -42,9 +38,7 @@ fn main() {
     );
 
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
-    let person = JSONData {
-        name: String::from("GElooooooo"),
-    };
+    let person = JSONData { data: 545 };
     let bytes = person.convert_to_bytes().expect("Failed to serialise");
     println!("Bytes: {:?}", bytes);
     println!(
