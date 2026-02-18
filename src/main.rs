@@ -24,7 +24,7 @@ pub struct Person {
 }
 
 fn main() {
-    let mut borsh_storage = Storage::new(WincodeData);
+    let mut borsh_storage: Storage<Person, WincodeData> = Storage::new(WincodeData);
     let person = Person {
         name: "Helooo".to_string(),
         age: 334,
@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn test_borsh() {
-        let mut borsh_storage = Storage::new(BorshData);
+        let mut borsh_storage: Storage<Person, BorshData> = Storage::new(BorshData);
 
         let person = generate_test_object();
         borsh_storage.save(person.clone());
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn test_wincode() {
-        let mut wincode_storage = Storage::new(WincodeData);
+        let mut wincode_storage: Storage<Person, WincodeData> = Storage::new(WincodeData);
 
         let person = generate_test_object();
         wincode_storage.save(person.clone());
@@ -73,7 +73,7 @@ mod tests {
 
     #[test]
     fn test_json() {
-        let mut json_storage = Storage::new(JSONData);
+        let mut json_storage: Storage<Person, JSONData> = Storage::new(JSONData);
 
         let person = generate_test_object();
         json_storage.save(person.clone());

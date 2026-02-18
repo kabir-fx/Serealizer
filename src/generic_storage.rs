@@ -1,16 +1,18 @@
 use crate::CustomSerializer;
-// use std::marker::PhantomData;
+use std::marker::PhantomData;
 
-pub struct Storage<SerializationType> {
-    data: SerializationType,
-    s_data: Option<Vec<u8>>,
+pub struct Storage<DataType, SerializationType> {
+    data_type: PhantomData<DataType>,
+    storage_type: SerializationType,
+    serialized_data: Option<Vec<u8>>,
 }
 
-impl<SerializationType> Storage<SerializationType> {
+impl<DataType, SerializationType> Storage<DataType, SerializationType> {
     pub fn new(serializer: SerializationType) -> Self {
         Self {
-            data: serializer,
-            s_data: None,
+            data_type: PhantomData,
+            storage_type: serializer,
+            serialized_data: None,
         }
     }
 
@@ -19,7 +21,7 @@ impl<SerializationType> Storage<SerializationType> {
         SerializationType: CustomSerializer<UserProvidedStruct, ErrorType>,
         ErrorType: std::fmt::Debug,
     {
-        self.s_data = Some(self.data.convert_to_bytes(value).expect("failed something"));
+        self.serialized_data = Some(self.storage_type.convert_to_bytes(value).expect("failed something"));
     }
 
     pub fn load<ErrorType, UserProvidedStruct>(&self) -> UserProvidedStruct
@@ -27,12 +29,12 @@ impl<SerializationType> Storage<SerializationType> {
         SerializationType: CustomSerializer<UserProvidedStruct, ErrorType>,
         ErrorType: std::fmt::Debug,
     {
-        self.data
-            .convert_from_bytes(self.s_data.clone().expect("Value not present"))
+        self.storage_type
+            .convert_from_bytes(self.serialized_data.clone().expect("Value not present"))
             .expect("Failed to deserialize")
     }
 
     pub fn has_data(&self) -> bool {
-        self.s_data.is_some()
+        self.serialized_data.is_some()
     }
 }
