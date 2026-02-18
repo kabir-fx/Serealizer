@@ -14,17 +14,17 @@ impl<SerializationType> Storage<SerializationType> {
         }
     }
 
-    pub fn save<ErrorType, UserProvidedType>(&mut self, value: UserProvidedType)
+    pub fn save<ErrorType, UserProvidedStruct>(&mut self, value: UserProvidedStruct)
     where
-        SerializationType: CustomSerializer<UserProvidedType, ErrorType>,
+        SerializationType: CustomSerializer<UserProvidedStruct, ErrorType>,
         ErrorType: std::fmt::Debug,
     {
         self.s_data = Some(self.data.convert_to_bytes(value).expect("failed something"));
     }
 
-    pub fn load<ErrorType, UserProvidedType>(&self) -> UserProvidedType
+    pub fn load<ErrorType, UserProvidedStruct>(&self) -> UserProvidedStruct
     where
-        SerializationType: CustomSerializer<UserProvidedType, ErrorType>,
+        SerializationType: CustomSerializer<UserProvidedStruct, ErrorType>,
         ErrorType: std::fmt::Debug,
     {
         self.data
